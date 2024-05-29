@@ -39,6 +39,9 @@ android {
     buildFeatures {
         compose = true
     }
+    packagingOptions {
+        resources.excludes += "DebugProbesKt.bin"
+    }
 }
 
 dependencies {
@@ -76,4 +79,9 @@ dependencies {
 
     // Optional - Integration with ViewModels
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    //Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0-RC")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
 }
