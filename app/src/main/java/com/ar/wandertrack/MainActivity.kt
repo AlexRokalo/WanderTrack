@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.ar.wandertrack
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
