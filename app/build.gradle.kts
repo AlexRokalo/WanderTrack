@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.services)
+    id("kotlin-kapt")
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -43,6 +45,10 @@ android {
     packagingOptions {
         resources.excludes += "DebugProbesKt.bin"
     }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
@@ -95,4 +101,8 @@ dependencies {
     implementation(libs.firebase.auth)
     // Also add the dependency for the Google Play services library and specify its version
     implementation(libs.play.services.auth)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }
