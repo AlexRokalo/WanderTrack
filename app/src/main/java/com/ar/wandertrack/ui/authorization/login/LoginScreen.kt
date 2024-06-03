@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,9 +32,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.clearCompositionErrors
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,12 +47,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ar.wandertrack.R
 import com.ar.wandertrack.theme.WanderTrackTheme
 
@@ -56,12 +62,16 @@ import com.ar.wandertrack.theme.WanderTrackTheme
 fun LoginScreen(
     contentPadding: PaddingValues = PaddingValues(),
 ) {
+    val loginViewModel = viewModel<LoginViewModel>()
+
     val configuration = LocalConfiguration.current
     val fraction = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         1f
     } else {
         0.7f
     }
+
+    val emailError = loginViewModel.emailError.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -104,10 +114,13 @@ fun LoginScreen(
                         text = "Enter your email to sign up for this app"
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Email()
+                    Email(viewModel = loginViewModel)
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = { /* Handle sign up */ },
+                        enabled = emailError.value.not(),
+                        onClick = {
+                            loginViewModel.login()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 24.dp, end = 24.dp),
@@ -221,23 +234,45 @@ fun TermsAndPrivacyText(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Email() {
-    var email by remember { mutableStateOf(TextFieldValue()) }
+fun Email(viewModel: LoginViewModel = viewModel()) {
+    val email by viewModel.email.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+
     OutlinedTextField(
         value = email,
-        onValueChange = { email = it },
+        onValueChange = { newEmail -> viewModel.onEmailChanged(newEmail) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color(0xFFE0E0E0),
             unfocusedBorderColor = Color(0xFFEEEEEE),
             errorBorderColor = Color.Red
         ),
+        isError = emailError,
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White, shape = MaterialTheme.shapes.small)
             .padding(start = 24.dp, end = 24.dp),
         singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         placeholder = { Text(text = "email@domain.com") }
     )
+
+    if (emailError) {
+        TextFieldError(textError = "Please enter a valid email")
+    }
+}
+
+@Composable
+fun TextFieldError(textError: String) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = textError,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp),
+            color = MaterialTheme.colorScheme.error
+        )
+    }
 }
 
 @Composable
