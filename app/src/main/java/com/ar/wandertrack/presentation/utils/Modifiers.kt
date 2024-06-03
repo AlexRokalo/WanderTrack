@@ -1,4 +1,4 @@
-package com.ar.wandertrack.utils
+package com.ar.wandertrack.presentation.utils
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn

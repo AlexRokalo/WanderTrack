@@ -1,4 +1,4 @@
-package com.ar.wandertrack.application
+package com.ar.wandertrack.presentation.application
 
 import android.app.Application
 import com.google.firebase.FirebaseApp

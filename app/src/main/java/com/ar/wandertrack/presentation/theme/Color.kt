@@ -1,4 +1,4 @@
-package com.ar.wandertrack.theme
+package com.ar.wandertrack.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

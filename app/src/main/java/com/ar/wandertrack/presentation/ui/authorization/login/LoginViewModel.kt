@@ -1,4 +1,4 @@
-package com.ar.wandertrack.ui.authorization.login
+package com.ar.wandertrack.presentation.ui.authorization.login
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
