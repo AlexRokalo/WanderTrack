@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ar.wandertrack.domain.repository.AuthRepository
+import com.ar.wandertrack.domain.usecase.SignInWithCredentialManagerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -13,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    authRepository: AuthRepository
+    authRepository: AuthRepository,
+    private val credentialManagerUseCase: SignInWithCredentialManagerUseCase
 ) : ViewModel() {
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -22,6 +23,7 @@ class LoginViewModel @Inject constructor(
     val emailError: StateFlow<Boolean> = _emailError
 
     init {
+        Log.d("LoginViewModel", "Init")
         viewModelScope.launch {
             val user = authRepository.getCurrentUser()
             Log.d(
@@ -35,6 +37,17 @@ class LoginViewModel @Inject constructor(
     fun onEmailChanged(newEmail: String) {
         _email.value = newEmail
         _emailError.value = !isValidEmail(newEmail)
+    }
+
+    fun signInWithCredential() {
+        viewModelScope.launch {
+            val user = credentialManagerUseCase()
+            if (user.isSuccess) {
+                Log.d("LoginViewModel", "User = $user")
+            } else {
+                Log.d("LoginViewModel", "User = $user")
+            }
+        }
     }
 
     fun login() {

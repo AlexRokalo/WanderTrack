@@ -134,7 +134,7 @@ fun LoginScreen(
                         contentDescription = null,
                         text = "Google",
                         onClick = {
-
+                            loginViewModel.signInWithCredential()
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))

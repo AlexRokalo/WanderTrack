@@ -1,7 +1,5 @@
 package com.ar.wandertrack.di
 
-import com.ar.wandertrack.data.repository.AuthRepositoryImpl
-import com.ar.wandertrack.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -15,8 +13,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
-
-    @Provides
-    @Singleton
-    fun provideAuthRepository(auth: FirebaseAuth): AuthRepository = AuthRepositoryImpl(auth)
 }
